@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const helmet = require("helmet");
 const mongoose = require("mongoose");
+const cors = require("cors");
 
 const path = require("path");
 
@@ -28,6 +29,7 @@ const PORT = process.env.PORT || 5000;
 
 const app = express();
 app.use(helmet());
+app.use(cors());
 app.use(router);
 
 app.use("/assets", express.static(path.join(__dirname, "..", "..", "assets")));
