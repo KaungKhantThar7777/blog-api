@@ -19,12 +19,15 @@ router.post("/users", async (req, res) => {
   res.json(data);
 });
 
+router.get("/isLoggedIn", async (req, res) => {
+  res.json({ isLoggedIn: !!req.cookies.isAdmin });
+});
 router.post("/login", async (req, res) => {
   await api.login(req, res);
 });
 router.post("/logout", async (req, res) => {
   res.clearCookie("isAdmin");
-  res.status(204).end();
+  res.json({ success: true });
 });
 
 router.post("/posts", isAdmin, async (req, res) => {

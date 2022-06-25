@@ -60,7 +60,7 @@ const createUser = async (req, res) => {
     // secure: true,
   });
   await user.save();
-  res.end();
+  res.json({ success: true });
 };
 const login = async (req, res) => {
   try {
@@ -78,10 +78,10 @@ const login = async (req, res) => {
       throw new Error("Invalid credentials");
     }
     res.cookie("isAdmin", true, {
-      // httpOnly: true,
-      // secure: true,
+      httpOnly: true,
+      secure: true,
     });
-    res.end();
+    res.json({ success: true });
   } catch (error) {
     res.clearCookie("isAdmin");
     res.status(401).json({ message: error.message });
