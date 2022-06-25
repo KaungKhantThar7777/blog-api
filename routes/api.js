@@ -1,19 +1,35 @@
 const moment = require("moment");
 const showdown = require("showdown");
+const argon2 = require("argon2");
 
+const UserModel = require("../models/user");
 const BlogPostModel = require("../models/post");
 
-const getPosts = async (query) => {
-  const { tag, limit } = query;
+const createPost = async (req, res) => {
+  try {
+    const post = new BlogPostModel(req.body);
+
+    await post.save();
+
+    res.status(201).json(post);
+  } catch (error) {
+    res.status(400).json({ message: "Something was wrong!" });
+  }
+};
+
+const getPosts = async (req, res) => {
+  const { tag, limit } = req.query;
 
   const now = moment().unix();
 
-  const res = await BlogPostModel.find(
+  const data = await BlogPostModel.find(
     {
       ...(tag && { tags: tag }),
-      dateTimestamp: {
-        $lte: now,
-      },
+      ...(!req.cookies.isAdmin && {
+        dateTimestamp: {
+          $lte: now,
+        },
+      }),
     },
     "title urlTitle dateTimestamp tags thumbnailImageUrl"
   )
@@ -21,7 +37,7 @@ const getPosts = async (query) => {
       dateTimestamp: -1,
     })
     .limit(limit);
-  return res;
+  res.json(data);
 };
 
 const getPost = async (urlTitle) => {
@@ -37,7 +53,44 @@ const getPost = async (urlTitle) => {
   return res;
 };
 
+const createUser = async (req, res) => {
+  const user = new UserModel(req.body);
+  res.cookie("isAdmin", true, {
+    // httpOnly: true,
+    // secure: true,
+  });
+  await user.save();
+  res.end();
+};
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await UserModel.findOne({
+      email,
+    });
+
+    if (!user) {
+      throw new Error("Invalid credentials");
+    }
+    const isValid = await argon2.verify(user.password, password);
+
+    if (!isValid) {
+      throw new Error("Invalid credentials");
+    }
+    res.cookie("isAdmin", true, {
+      // httpOnly: true,
+      // secure: true,
+    });
+    res.end();
+  } catch (error) {
+    res.clearCookie("isAdmin");
+    res.status(401).json({ message: error.message });
+  }
+};
 module.exports = {
   getPosts,
   getPost,
+  createUser,
+  login,
+  createPost,
 };
