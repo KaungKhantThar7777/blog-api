@@ -104,9 +104,10 @@ const login = async (req, res) => {
       throw new Error("Invalid credentials");
     }
     res.cookie("isAdmin", true, {
+      maxAge: 60 * 60 * 1000,
       httpOnly: true,
       secure: true,
-      sameSite: true,
+      sameSite: "lax",
     });
     res.json({ success: true });
   } catch (error) {
