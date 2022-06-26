@@ -107,7 +107,7 @@ const login = async (req, res) => {
       maxAge: 60 * 60 * 1000,
       httpOnly: true,
       secure: true,
-      sameSite: "lax",
+      sameSite: "none",
     });
     res.json({ success: true });
   } catch (error) {
