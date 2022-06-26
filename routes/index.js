@@ -33,5 +33,12 @@ router.post("/logout", async (req, res) => {
 router.post("/posts", isAdmin, async (req, res) => {
   await api.createPost(req, res);
 });
+router.put("/posts/:title", isAdmin, async (req, res) => {
+  await api.updatePost(req, res);
+});
+
+router.delete("/posts/:title", isAdmin, async (req, res) => {
+  await api.deletePost(req, res);
+});
 
 module.exports = router;

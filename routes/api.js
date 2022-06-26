@@ -13,10 +13,36 @@ const createPost = async (req, res) => {
 
     res.status(201).json(post);
   } catch (error) {
+    console.log(error);
     res.status(400).json({ message: "Something was wrong!" });
   }
 };
 
+const updatePost = async (req, res) => {
+  try {
+    const post = await BlogPostModel.findOneAndUpdate(
+      {
+        urlTitle: req.params.title,
+      },
+      req.body,
+      {
+        new: true,
+      }
+    );
+
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(400).json({ message: "Something was wrong" });
+  }
+};
+
+const deletePost = async (req, res) => {
+  await BlogPostModel.findOneAndRemove({
+    urlTitle: req.params.title,
+  });
+
+  res.json({ success: true });
+};
 const getPosts = async (req, res) => {
   const { tag, limit } = req.query;
 
@@ -93,4 +119,6 @@ module.exports = {
   createUser,
   login,
   createPost,
+  updatePost,
+  deletePost,
 };
