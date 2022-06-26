@@ -111,7 +111,13 @@ const login = async (req, res) => {
     });
     res.json({ success: true });
   } catch (error) {
-    res.clearCookie("isAdmin");
+    res.clearCookie("isAdmin", {
+      maxAge: 60 * 60 * 1000,
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+
     res.status(401).json({ message: error.message });
   }
 };

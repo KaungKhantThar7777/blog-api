@@ -26,7 +26,12 @@ router.post("/login", async (req, res) => {
   await api.login(req, res);
 });
 router.post("/logout", async (req, res) => {
-  res.clearCookie("isAdmin");
+  res.clearCookie("isAdmin", {
+    maxAge: 60 * 60 * 1000,
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
   res.json({ success: true });
 });
 
