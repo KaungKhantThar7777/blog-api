@@ -45,7 +45,11 @@ app.use(
     extended: true,
   })
 );
-app.use(cookieParser());
+app.use(
+  cookieParser({
+    sameSite: true,
+  })
+);
 app.use(helmet());
 app.use(router);
 

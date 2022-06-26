@@ -106,6 +106,7 @@ const login = async (req, res) => {
     res.cookie("isAdmin", true, {
       httpOnly: true,
       secure: true,
+      sameSite: true,
     });
     res.json({ success: true });
   } catch (error) {
