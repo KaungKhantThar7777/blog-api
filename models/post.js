@@ -23,7 +23,6 @@ const BlogPostSchema = new mongoose.Schema(
 );
 
 BlogPostSchema.index({
-  id: -1,
   urlTitle: 1,
 });
 
